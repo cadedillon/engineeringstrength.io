@@ -1,0 +1,2 @@
+# Sensitive AWS keys
+.env.local
