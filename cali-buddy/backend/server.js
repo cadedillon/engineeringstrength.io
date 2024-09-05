@@ -2,12 +2,36 @@
 require("dotenv").config();
 
 const express = require("express");
+const fs = require("fs"); // Import the fs module
+
 const multer = require("multer");
 const uploadFile = require("./upload");
-const fs = require("fs"); // Import the fs module
+
+const mongoose = require("mongoose");
+const authRoutes = require("./routes/authRoutes");
+const { protect } = require("./middleware/auth");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Connect to MongoDB
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+// Middleware
+app.use(express.json());
+
+// Auth routes
+app.use("/auth", authRoutes);
 
 // Set up Multer for file uploads
 const storage = multer.diskStorage({
