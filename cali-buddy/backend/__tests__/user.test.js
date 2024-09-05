@@ -7,9 +7,6 @@ describe("User Model Test", () => {
   beforeAll(async () => {
     // Connect to the in-memory database (you could use a real test DB if preferred)
     await mongoose.connect(process.env.MONGO_URI_TEST);
-
-    // Clean up: Delete test user if it exists
-    await User.deleteOne({ username: "testuser1" });
   });
 
   afterAll(async () => {

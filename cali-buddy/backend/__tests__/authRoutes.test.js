@@ -8,9 +8,6 @@ require("dotenv").config();
 describe("Auth Routes Test", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URI_TEST);
-
-    // Clean up: Delete test user if it exists
-    await User.deleteOne({ username: "testuser2" });
   });
 
   afterAll(async () => {
