@@ -60,10 +60,7 @@ app.post("/upload", upload.single("video"), async (req, res) => {
 // Only connect to the database if not in test environment
 if (process.env.NODE_ENV !== "test") {
   mongoose
-    .connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    .connect(process.env.MONGO_URI)
     .then(() => {
       console.log("MongoDB connected");
     })
