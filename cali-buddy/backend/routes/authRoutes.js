@@ -28,7 +28,12 @@ router.post("/register", async (req, res) => {
     await user.save();
 
     // Send a success response
-    res.status(201).json({ message: "User registered successfully" });
+    res
+      .status(201)
+      .json({
+        message: "User registered successfully",
+        token: generateToken(user._id),
+      });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Server error" });
@@ -46,7 +51,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && (await user.matchPassword(password))) {
-      res.json({
+      res.status(200).json({
         _id: user._id,
         username: user.username,
         token: generateToken(user._id),

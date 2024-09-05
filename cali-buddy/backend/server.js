@@ -14,19 +14,6 @@ const { protect } = require("./middleware/auth");
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MongoDB connected");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
-
 // Middleware
 app.use(express.json());
 
@@ -69,7 +56,25 @@ app.post("/upload", upload.single("video"), async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// Only start the server if not in test environment
+// Only connect to the database if not in test environment
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => {
+      console.log("MongoDB connected");
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err);
+    });
+
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = app; // Export the app instance for testing
