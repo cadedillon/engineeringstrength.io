@@ -1,15 +1,18 @@
 // server.js
 require("dotenv").config();
+
 const express = require("express");
 const multer = require("multer");
 const uploadFile = require("./upload");
+const fs = require("fs"); // Import the fs module
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Set up Multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Save uploaded files temporarily
+    cb(null, "temp"); // Save uploaded files temporarily
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -25,6 +28,13 @@ app.post("/upload", upload.single("video"), async (req, res) => {
 
     // Upload the file to S3
     const result = await uploadFile(filePath);
+
+    // Delete the file from local storage
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+      }
+    });
 
     // Respond with the S3 URL of the uploaded video
     res
