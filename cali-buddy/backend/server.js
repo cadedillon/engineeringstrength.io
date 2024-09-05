@@ -2,12 +2,32 @@
 require("dotenv").config();
 
 const express = require("express");
-const multer = require("multer");
-const uploadFile = require("./upload");
 const fs = require("fs"); // Import the fs module
 
+const multer = require("multer");
+const uploadFile = require("./upload");
+const cors = require("cors");
+
+const mongoose = require("mongoose");
+const authRoutes = require("./routes/authRoutes");
+const { protect } = require("./middleware/auth");
+
 const app = express();
-const port = process.env.PORT || 3000;
+const corsOptions = {
+  origin: "http://localhost:3000", // Allow only this origin
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify which methods are allowed
+  credentials: true, // Allow cookies and other credentials
+};
+
+app.use(cors(corsOptions));
+
+const port = process.env.PORT || 5050;
+
+// Middleware
+app.use(express.json());
+
+// Auth routes
+app.use("/auth", authRoutes);
 
 // Set up Multer for file uploads
 const storage = multer.diskStorage({
@@ -45,7 +65,21 @@ app.post("/upload", upload.single("video"), async (req, res) => {
   }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// Only start the server if not in test environment
+// Only connect to the database if not in test environment
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected");
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err);
+    });
+
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+module.exports = app; // Export the app instance for testing
