@@ -1,5 +1,5 @@
 const fs = require("fs"); // Import the fs module
-const { fetchFromS3, uploadToS3 } = require("../utilities/s3Helper");
+const { fetchFromS3, uploadToS3 } = require("../utils/s3Helper");
 
 // @route   POST /video/upload
 // @desc    Upload a video file to S3
