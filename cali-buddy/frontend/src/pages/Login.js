@@ -25,7 +25,13 @@ const Login = () => {
         username,
         password,
       });
+
+      const token = response.data.token;
+
+      // Store the token in localStorage
+      localStorage.setItem("token", token);
       console.log("Logged in successfully:", response.data);
+
       // Redirect to dashboard after successful login
       navigate("/dashboard");
     } catch (err) {

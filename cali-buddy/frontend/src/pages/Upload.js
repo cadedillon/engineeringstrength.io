@@ -11,6 +11,8 @@ const Upload = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+
     const formData = new FormData();
     formData.append("video", file);
 
@@ -20,6 +22,7 @@ const Upload = () => {
         formData,
         {
           headers: {
+            Authorization: `Bearer ${token}`, // Attach token in header
             "Content-Type": "multipart/form-data",
           },
         }
