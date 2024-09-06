@@ -22,7 +22,7 @@ const uploadVideo = async (req, res) => {
     // Respond with the S3 URL of the uploaded video
     res
       .status(200)
-      .json({ message: "File uploaded successfully!", url: result.Location });
+      .json({ message: "File uploaded successfully!", url: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
