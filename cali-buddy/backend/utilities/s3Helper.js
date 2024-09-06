@@ -1,12 +1,17 @@
-// upload.js
-const fs = require("fs");
+const fs = require("fs"); // Import the fs module
 const path = require("path");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require("@aws-sdk/client-s3");
 
 // Initialize the S3 client
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 
-const uploadFile = async (filePath) => {
+// Function to upload file to S3
+const uploadToS3 = async (filePath) => {
   try {
     const fileContent = fs.readFileSync(filePath);
 
@@ -34,4 +39,12 @@ const uploadFile = async (filePath) => {
   }
 };
 
-module.exports = uploadFile;
+// Function to fetch file from S3
+const fetchFromS3 = async (fileKey) => {
+  // S3 fetch logic here
+};
+
+module.exports = {
+  uploadToS3,
+  fetchFromS3,
+};
