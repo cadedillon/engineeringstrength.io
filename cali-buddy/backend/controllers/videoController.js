@@ -1,6 +1,7 @@
 const fs = require("fs"); // Import the fs module
-const path = require("path");
-const { fetchFromS3, uploadToS3 } = require("../utils/s3Helper");
+const { fetchSignedURLsFromS3, uploadToS3 } = require("../utils/s3Helper");
+const Video = require("../models/Video");
+const User = require("../models/User");
 
 // @route   POST /video/upload
 // @desc    Upload a video file to S3
@@ -11,6 +12,16 @@ const uploadVideo = async (req, res) => {
     const filePath = req.file.path;
     const fileName = req.file.originalname;
     const userID = req.user._id;
+
+    const key = `${userID}/videos/${fileName}`;
+
+    // Create a new video document and store it in the database
+    const video = await Video.create({
+      userID,
+      fileName,
+      key,
+    });
+    await video.save();
 
     // Upload the file to S3
     const result = await uploadToS3(filePath, fileName, userID);
@@ -31,24 +42,29 @@ const uploadVideo = async (req, res) => {
   }
 };
 
-// @route   GET /video/:id
-// @desc    Fetch a video file from S3
+// @route   GET /video/history
+// @desc    Fetch user's video files from S3
 // @access  Private
 // Endpoint to fetch a video file
 const fetchVideo = async (req, res) => {
   try {
-    const videoKey = req.params.id;
+    const user = await User.findOne({ username: req.user.username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    const videoStream = await fetchFromS3(videoKey);
+    // Fetch videos related to the user, sorted by upload date
+    const videos = await Video.find({ userID: user._id }).sort({
+      uploadedAt: -1,
+    });
 
-    // Set headers for video playback in the browser
-    res.setHeader("Content-Type", "video/mp4");
+    // Generate pre-signed URLs for each video
+    const videosWithUrls = await fetchSignedURLsFromS3(videos);
 
-    // Stream the video to the client
-    videoStream.pipe(res);
+    res.status(200).json(videosWithUrls);
   } catch (error) {
-    console.error("Error fetching video:", error);
-    res.status(500).json({ error: "Failed to fetch video" });
+    console.error("Error fetching user videos:", error);
+    res.status(500).json({ message: "Error fetching user videos" });
   }
 };
 
