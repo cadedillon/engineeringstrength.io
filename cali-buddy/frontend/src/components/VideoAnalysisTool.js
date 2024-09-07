@@ -1,11 +1,133 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Box, Button, Heading, Text, Input, useToast } from "@chakra-ui/react";
+import * as poseDetection from "@tensorflow-models/pose-detection";
+import * as tf from "@tensorflow/tfjs-core";
+// Register one of the TF.js backends.
+import "@tensorflow/tfjs-backend-webgl";
 
 const VideoAnalysisTool = () => {
   const [videoFile, setVideoFile] = useState(null); // Store the video file for browser playback
   const [videoURL, setVideoURL] = useState(""); // Store the video URL for playback
+  const [detector, setDetector] = useState("");
   const videoRef = useRef(null); // Reference for the video element
+  const canvasRef = useRef(null);
   const toast = useToast();
+
+  // Load PoseNet model on component mount
+  useEffect(() => {
+    const loadPoseNet = async () => {
+      await tf.ready();
+
+      const detectorConfig = {
+        modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
+      };
+      const detector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.MoveNet,
+        detectorConfig
+      );
+      setDetector(detector);
+    };
+    loadPoseNet();
+  }, []);
+
+  // Run PoseNet on the video
+  const runPoseNet = async () => {
+    if (!detector || !videoRef.current || !canvasRef.current) return;
+
+    console.log("Running posenet...");
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    // Get the video's position and size
+    const videoRect = video.getBoundingClientRect();
+
+    canvas.style.position = "absolute";
+    canvas.style.top = `${videoRect.top}px`;
+    canvas.style.left = `${videoRect.left}px`;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Start analyzing the video frames
+
+    const analyzeFrame = async () => {
+      if (video.paused || video.ended) return;
+
+      const estimationConfig = {
+        maxPoses: 5,
+        flipHorizontal: false,
+        scoreThreshold: 0.75,
+        nmsRadius: 20,
+      };
+
+      console.log("Analyzing frame...");
+
+      // Run posenet and get the keypoints
+      const poses = await detector.estimatePoses(video, estimationConfig);
+      console.log(poses);
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw keypoints and skeleton on the canvas
+      for (const pose of poses) {
+        drawKeypoints(pose.keypoints, ctx);
+        drawSkeleton(pose.keypoints, ctx);
+      }
+      //drawKeypoints(poses[0].keypoints, ctx);
+
+      // Keep running the analysis if the video is still playing
+      requestAnimationFrame(analyzeFrame);
+    };
+    analyzeFrame();
+  };
+
+  // Draw keypoints on the canvas
+  const drawKeypoints = (keypoints, ctx) => {
+    keypoints.forEach((keypoint) => {
+      const { x, y, score } = keypoint; // Destructure x, y, and score from keypoint
+      if (score > 0.0) {
+        // Only draw keypoints with a confidence score above 0.5
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fillStyle = "aqua"; // Set the color for the keypoints
+        ctx.fill();
+      }
+    });
+  };
+
+  // Draw skeleton on the canvas
+  const drawSkeleton = (keypoints, ctx) => {
+    const adjacentKeyPoints = [
+      [5, 6], // Shoulders
+      [5, 7], // Left shoulder to left elbow
+      [7, 9], // Left elbow to left wrist
+      [6, 8], // Right shoulder to right elbow
+      [8, 10], // Right elbow to right wrist
+      [5, 11], // Left shoulder to left hip
+      [6, 12], // Right shoulder to right hip
+      [11, 13], // Left hip to left knee
+      [13, 15], // Left knee to left ankle
+      [12, 14], // Right hip to right knee
+      [14, 16], // Right knee to right ankle
+    ];
+
+    adjacentKeyPoints.forEach(([fromIdx, toIdx]) => {
+      const from = keypoints[fromIdx];
+      const to = keypoints[toIdx];
+
+      if (from.score > 0.5 && to.score > 0.5) {
+        ctx.beginPath();
+        ctx.moveTo(from.x, from.y);
+        ctx.lineTo(to.x, to.y);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "lime";
+        ctx.stroke();
+      }
+    });
+  };
 
   // Handle video file selection
   const handleFileChange = (e) => {
@@ -66,6 +188,20 @@ const VideoAnalysisTool = () => {
     }
   };
 
+  // Handle video playback
+  const handleVideoPlay = () => {
+    runPoseNet(); // Start PoseNet analysis once the video is playing
+  };
+
+  // Handle video stop (pause/ended) and remove canvas
+  const handleVideoStop = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    // Clear the canvas when the video is paused or stopped
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
   return (
     <Box>
       <Heading size="lg">Video Analysis Tool</Heading>
@@ -84,8 +220,21 @@ const VideoAnalysisTool = () => {
             ref={videoRef}
             src={videoURL}
             controls
-            maxwidth="600px" // Set the max width for the video
-            height="auto" // Maintains the aspect ratio
+            onPlay={handleVideoPlay} // Ensure the video is fully loaded
+            onEnded={handleVideoStop} // Clear canvas when video ends
+            width="480px" // Set the max width for the video
+            height="640px"
+          />
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "480px", // Match the video width
+              height: "640px", // Match the video height
+              pointerEvents: "none", // Make sure the canvas doesn't block video interaction
+            }}
           />
         </Box>
       )}
