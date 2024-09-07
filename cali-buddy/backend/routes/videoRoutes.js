@@ -7,13 +7,13 @@ const { protect } = require("../middleware/auth"); // Protect route with auth mi
 const router = express.Router();
 
 // @route   POST /video/upload
-// @desc    Upload a video file to S3
+// @desc    Upload a video file to S3 with user-specific folder
 // @access  Private
 router.post("/upload", protect, upload.single("video"), uploadVideo);
 
-// @route   GET /api/video/:id
-// @desc    Fetch video from S3
+// @route   GET /video/hsitory
+// @desc    Fetch user's video history from S3
 // @access  Private
-router.get("/:id", protect, fetchVideo);
+router.get("/history", protect, fetchVideo);
 
 module.exports = router;

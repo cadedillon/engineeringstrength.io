@@ -11,13 +11,13 @@ const {
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 
 // Function to upload file to S3
-const uploadToS3 = async (filePath) => {
+const uploadToS3 = async (filePath, fileName, userID) => {
   try {
     const fileContent = fs.readFileSync(filePath);
 
     const params = {
       Bucket: process.env.S3_BUCKET_NAME,
-      Key: path.basename(filePath), // File name you want to save as in S3
+      Key: `${userID}/videos/${fileName}`, // File name you want to save as in S3
       Body: fileContent,
       ContentType: "video/mp4", // Adjust the content type if necessary
     };

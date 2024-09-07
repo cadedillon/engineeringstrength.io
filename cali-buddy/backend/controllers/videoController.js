@@ -1,4 +1,5 @@
 const fs = require("fs"); // Import the fs module
+const path = require("path");
 const { fetchFromS3, uploadToS3 } = require("../utils/s3Helper");
 
 // @route   POST /video/upload
@@ -8,9 +9,11 @@ const { fetchFromS3, uploadToS3 } = require("../utils/s3Helper");
 const uploadVideo = async (req, res) => {
   try {
     const filePath = req.file.path;
+    const fileName = req.file.originalname;
+    const userID = req.user._id;
 
     // Upload the file to S3
-    const result = await uploadToS3(filePath);
+    const result = await uploadToS3(filePath, fileName, userID);
 
     // Delete the file from local storage
     fs.unlink(filePath, (err) => {
