@@ -84,7 +84,7 @@ const VideoAnalysisTool = () => {
             ref={videoRef}
             src={videoURL}
             controls
-            maxWidth="600px" // Set the max width for the video
+            maxwidth="600px" // Set the max width for the video
             height="auto" // Maintains the aspect ratio
           />
         </Box>
