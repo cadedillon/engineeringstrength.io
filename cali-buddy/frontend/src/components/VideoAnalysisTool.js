@@ -19,7 +19,7 @@ const VideoAnalysisTool = () => {
 
   const API_URL =
     process.env.IS_PROD === "true"
-      ? "https://engineeringstrength.io:5050"
+      ? "http://engineeringstrength.io:5050"
       : "http://localhost:5050";
 
   // Load PoseNet model on component mount

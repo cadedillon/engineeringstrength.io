@@ -9,7 +9,7 @@ const app = express();
 
 const REACT_URL =
   process.env.IS_PROD === "true"
-    ? "https://engineeringstrength.io:3000"
+    ? "http://engineeringstrength.io:3000"
     : "http://localhost:3000";
 
 const corsOptions = {
