@@ -17,6 +17,11 @@ const VideoAnalysisTool = () => {
   const canvasRef = useRef(null);
   const toast = useToast();
 
+  const API_URL =
+    process.env.IS_PROD === "true"
+      ? "https://engineeringstrength.io:5050"
+      : "http://localhost:5050";
+
   // Load PoseNet model on component mount
   useEffect(() => {
     const loadPoseNet = async () => {
@@ -109,7 +114,7 @@ const VideoAnalysisTool = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5050/video/upload", {
+      const response = await fetch(`${API_URL}/video/upload`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

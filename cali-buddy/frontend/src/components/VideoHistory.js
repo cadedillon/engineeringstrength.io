@@ -13,12 +13,17 @@ const VideoHistory = () => {
   const [loading, setLoading] = useState(true);
   const toast = useToast();
 
+  const API_URL =
+    process.env.IS_PROD === "true"
+      ? "https://engineeringstrength.io:5050"
+      : "http://localhost:5050";
+
   useEffect(() => {
     const fetchVideos = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const response = await fetch("http://localhost:5050/video/history", {
+        const response = await fetch(`${API_URL}/video/history`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

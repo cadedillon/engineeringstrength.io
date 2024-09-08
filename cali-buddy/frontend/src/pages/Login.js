@@ -18,10 +18,15 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const API_URL =
+    process.env.IS_PROD === "true"
+      ? "https://engineeringstrength.io:5050"
+      : "http://localhost:5050";
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5050/auth/login", {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         username,
         password,
       });

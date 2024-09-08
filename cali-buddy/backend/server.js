@@ -1,17 +1,19 @@
 // server.js
 require("dotenv").config();
-
 const express = require("express");
-
 const cors = require("cors");
-
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const videoRoutes = require("./routes/videoRoutes");
-
 const app = express();
+
+const REACT_URL =
+  process.env.IS_PROD === "true"
+    ? "https://engineeringstrength.io:3000"
+    : "http://localhost:3000";
+
 const corsOptions = {
-  origin: "http://localhost:3000", // Allow only this origin
+  origin: `${REACT_URL}`, // Allow only this origin
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Specify which methods are allowed
   credentials: true, // Allow cookies and other credentials
 };
