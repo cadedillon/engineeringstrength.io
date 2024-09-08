@@ -1,0 +1,22 @@
+/* Container for video and canvas */
+.video-container {
+  position: relative;
+  display: inline-block; /* Keeps the canvas and video aligned */
+}
+
+/* Video styling */
+.video {
+  display: block;
+  width: 480px; /* Ensures the video scales properly */
+  height: 640px;
+}
+
+/* Canvas styling */
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px; /* Same width as video */
+  height: 640px; /* Same height as video */
+  pointer-events: none; /* Allows clicks to pass through the canvas */
+}
