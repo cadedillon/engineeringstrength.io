@@ -8,6 +8,12 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    // Set Cache-Control headers to prevent caching
+    res.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+    );
+
     // Check if user exists
     const userExists = await User.findOne({ email });
 
@@ -38,6 +44,12 @@ const register = async (req, res) => {
 // @route   POST /auth/login
 // @access  Public
 const login = async (req, res) => {
+  // Set Cache-Control headers to prevent caching
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+  );
+
   const { username, password } = req.body;
 
   try {

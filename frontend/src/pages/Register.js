@@ -21,7 +21,7 @@ const Register = () => {
 
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
-      ? "http://app.engineeringstrength.io"
+      ? "https://app.engineeringstrength.io"
       : "http://localhost:5050";
 
   const handleRegister = async (e) => {

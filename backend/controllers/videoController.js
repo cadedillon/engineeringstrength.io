@@ -8,6 +8,12 @@ const User = require("../models/User");
 // @access  Private
 // Endpoint to upload a video file
 const uploadVideo = async (req, res) => {
+  // Set Cache-Control headers to prevent caching
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+  );
+
   try {
     const filePath = req.file.path;
     const fileName = req.file.originalname;
@@ -47,6 +53,12 @@ const uploadVideo = async (req, res) => {
 // @access  Private
 // Endpoint to fetch a video file
 const fetchVideo = async (req, res) => {
+  // Set Cache-Control headers to prevent caching
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+  );
+
   try {
     const user = await User.findOne({ username: req.user.username });
     if (!user) {
