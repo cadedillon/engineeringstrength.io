@@ -14,7 +14,7 @@ const VideoHistory = () => {
   const toast = useToast();
 
   const API_URL =
-    process.env.IS_PROD === "true"
+    process.env.REACT_APP_IS_PROD === "true"
       ? "app.engineeringstrength.io"
       : "http://localhost:5050";
 
