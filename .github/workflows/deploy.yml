@@ -1,0 +1,66 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment on push to the main branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_PAT }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      # Build and push backend Docker image
+      - name: Build and push backend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+      # Build and push frontend Docker image
+      - name: Build and push frontend
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+  deploy-backend:
+    needs: build-and-push # Run this job after the build-and-push job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Backend Server (Server 1)
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.BACKEND_IP }} # IP for backend server
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+            docker stop backend || true
+            docker rm backend || true
+            docker run -d -p 3000:3000 --name backend ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+  deploy-frontend:
+    needs: build-and-push # Run this job after the build-and-push job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Frontend Server (Server 2)
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.FRONTEND_IP }} # IP for frontend server
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+            docker stop frontend || true
+            docker rm frontend || true
+            docker run -d -p 8080:80 --name frontend ${{ secrets.DOCKER_USERNAME }}/frontend:latest
