@@ -15,7 +15,7 @@ const VideoHistory = () => {
 
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
-      ? "https://app.engineeringstrength.io"
+      ? "http://app.engineeringstrength.io"
       : "http://localhost:5050";
 
   useEffect(() => {
