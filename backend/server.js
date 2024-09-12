@@ -20,7 +20,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const port = process.env.PORT || 5050;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
@@ -35,7 +35,7 @@ app.use("/video", videoRoutes);
 // Only connect to the database if not in test environment
 if (process.env.NODE_ENV !== "test") {
   mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.MONGO_URL)
     .then(() => {
       console.log("MongoDB connected");
     })
