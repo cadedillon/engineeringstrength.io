@@ -1,29 +1,25 @@
 # Frontend Dockerfile
 FROM node:18 as build
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
 COPY package.json ./
 RUN npm install
 
-# Copy the entire app and build it
 COPY . .
 
-# Define build-time arguments
 ARG REACT_APP_IS_PROD
 ENV REACT_APP_IS_PROD=${REACT_APP_IS_PROD}
 
-# Inject build-time arguments into the build process
 RUN npm run build
 
-# Use Nginx to serve the built files
 FROM nginx:alpine
+
+# Copy custom Nginx config
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose the port that Nginx will serve on
 EXPOSE 80
 
-# Run Nginx
 CMD ["nginx", "-g", "daemon off;"]
