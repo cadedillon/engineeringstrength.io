@@ -21,7 +21,7 @@ const Login = () => {
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
       ? "https://app.engineeringstrength.io"
-      : "http://localhost:5050";
+      : "http://localhost:3000";
 
   const handleLogin = async (e) => {
     e.preventDefault();
