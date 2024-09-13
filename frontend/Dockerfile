@@ -13,10 +13,10 @@ COPY . .
 
 # Define build-time arguments
 ARG ARG1
-ENV REACT_APP_IS_PROD=${REACT_APP_IS_PROD}}
+ENV REACT_APP_IS_PROD=${ARG1}}
 
 # Inject build-time arguments into the build process
-RUN REACT_APP_IS_PROD=$true npm run build
+RUN npm run build
 
 # Use Nginx to serve the built files
 FROM nginx:alpine
