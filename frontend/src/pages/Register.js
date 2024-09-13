@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, replace } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -22,7 +23,7 @@ const Register = () => {
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
       ? "https://app.engineeringstrength.io"
-      : "http://localhost:3000";
+      : "http://localhost:5050";
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -33,7 +34,20 @@ const Register = () => {
         password,
       });
       console.log("Registration successful:", response.data);
-      navigate("/dashboard");
+      const { token } = response.data;
+
+      if (!token) {
+        throw new Error("Token not received");
+      }
+
+      await localStorage.setItem("token", token);
+      console.log("Token stored:", token);
+
+      // Set logged-in state to trigger redirect in `useEffect`
+      const auth = isAuthenticated();
+      if (auth) {
+        navigate("/dashboard", { replace });
+      }
     } catch (err) {
       setError("Registration failed. Please try again.");
       console.error(err);

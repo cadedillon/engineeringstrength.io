@@ -10,7 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -21,27 +22,34 @@ const Login = () => {
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
       ? "https://app.engineeringstrength.io"
-      : "http://localhost:3000";
+      : "http://localhost:5050";
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(`${API_URL}/auth/login`, {
         username,
         password,
       });
 
-      const token = response.data.token;
+      const { token } = response.data;
 
-      // Store the token in localStorage
-      localStorage.setItem("token", token);
-      console.log("Logged in successfully:", response.data);
+      if (!token) {
+        throw new Error("Token not received");
+      }
 
-      // Redirect to dashboard after successful login
-      navigate("/dashboard");
+      await localStorage.setItem("token", token);
+      console.log("Token stored:", token);
+
+      // Set logged-in state to trigger redirect in `useEffect`
+      const auth = await isAuthenticated();
+      if (auth) {
+        navigate("/dashboard", { replace });
+      }
     } catch (err) {
-      setError("Login failed. Please check your credentials.");
-      console.error(err);
+      setError("Login failed.");
+      console.error("Login error:", err);
     }
   };
 

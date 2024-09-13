@@ -34,7 +34,11 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              isAuthenticated() ? <Dashboard /> : <Navigate to="/login" />
+              isAuthenticated() ? (
+                <Dashboard />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           >
             <Route path="analysis" element={<VideoAnalysisTool />} />

@@ -7,9 +7,7 @@ const container = document.getElementById("root");
 const root = createRoot(container); // Use createRoot instead of ReactDOM.render
 
 root.render(
-  <React.StrictMode>
-    <ChakraProvider>
-      <App />
-    </ChakraProvider>
-  </React.StrictMode>
+  <ChakraProvider>
+    <App />
+  </ChakraProvider>
 );

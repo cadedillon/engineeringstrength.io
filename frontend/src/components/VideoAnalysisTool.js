@@ -20,7 +20,7 @@ const VideoAnalysisTool = () => {
   const API_URL =
     process.env.REACT_APP_IS_PROD === "true"
       ? "https://app.engineeringstrength.io"
-      : "http://localhost:3000";
+      : "http://localhost:5050";
 
   // Load PoseNet model on component mount
   useEffect(() => {

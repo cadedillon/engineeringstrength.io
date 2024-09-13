@@ -20,7 +20,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const port = process.env.PORT || 3000;
+const port = process.env.IS_PROD === "true" ? process.env.PORT : 5050;
 
 // Middleware
 app.use(express.json());
