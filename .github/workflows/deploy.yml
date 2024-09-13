@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: ".env"
-          target: "/path/on/server/.env" # Path where .env should be on the server
+          target: "~/.env" # Path where .env should be on the server
 
       - name: Deploy to Backend Server (Server 1)
         uses: appleboy/ssh-action@v0.1.0
