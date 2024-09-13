@@ -36,15 +36,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Copy .env file to Backend Server
-        uses: appleboy/scp-action@v0.1.0
-        with:
-          host: ${{ secrets.BACKEND_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          source: "/root/backend/.env"
-          target: "/root/.env" # Path where .env should be on the server
-
       - name: Deploy to Backend Server (Server 1)
         uses: appleboy/ssh-action@v0.1.0
         with:
