@@ -12,7 +12,8 @@ RUN npm install
 COPY . .
 
 # Define build-time arguments
-ARG REACT_APP_IS_PROD
+ARG ARG1
+ENV REACT_APP_IS_PROD=${REACT_APP_IS_PROD}}
 
 # Inject build-time arguments into the build process
 RUN REACT_APP_IS_PROD=$true npm run build
