@@ -10,7 +10,12 @@ RUN npm install
 
 # Copy the entire app and build it
 COPY . .
-RUN npm run build
+
+# Define build-time arguments
+ARG REACT_APP_IS_PROD
+
+# Inject build-time arguments into the build process
+RUN REACT_APP_IS_PROD=$true npm run build
 
 # Use Nginx to serve the built files
 FROM nginx:alpine

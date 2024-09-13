@@ -36,6 +36,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Copy .env file to Backend Server
+        uses: appleboy/scp-action@v0.1.0
+        with:
+          host: ${{ secrets.BACKEND_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          source: ".env"
+          target: "/path/on/server/.env" # Path where .env should be on the server
+
       - name: Deploy to Backend Server (Server 1)
         uses: appleboy/ssh-action@v0.1.0
         with:
@@ -46,7 +55,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
             docker stop backend || true
             docker rm backend || true
-            docker run -d -p 3000:3000 --name backend ${{ secrets.DOCKER_USERNAME }}/backend:latest
+            docker run -d -p 3000:3000 --name backend --env-file ~/.env ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
   deploy-frontend:
     needs: build-and-push # Run this job after the build-and-push job
