@@ -28,7 +28,7 @@ jobs:
       # Build and push frontend Docker image
       - name: Build and push frontend
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest --build-arg arg1=true ./frontend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest --build-arg REACT_APP_IS_PROD=true ./frontend
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
   deploy-backend:
