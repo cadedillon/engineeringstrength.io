@@ -8,7 +8,7 @@ const container = document.getElementById("root");
 const root = createRoot(container); // Use createRoot instead of ReactDOM.render
 
 root.render(
-  <ChakraProvider theme={defaultTheme}>
+  <ChakraProvider>
     <App />
   </ChakraProvider>
 );

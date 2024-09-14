@@ -1,17 +1,19 @@
-const express = require("express");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
-const router = express.Router();
-
 // @desc    Register new user
-// @route   POST /api/auth/register
+// @route   POST /auth/register
 // @access  Public
-router.post("/register", async (req, res) => {
+const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
+    // Set Cache-Control headers to prevent caching
+    res.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+    );
+
     // Check if user exists
     const userExists = await User.findOne({ email });
 
@@ -28,22 +30,26 @@ router.post("/register", async (req, res) => {
     await user.save();
 
     // Send a success response
-    res
-      .status(201)
-      .json({
-        message: "User registered successfully",
-        token: generateToken(user._id),
-      });
+    res.status(201).json({
+      message: "User registered successfully",
+      token: generateToken(user._id),
+    });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ error: "Server error" });
   }
-});
+};
 
 // @desc    Authenticate user & get token
-// @route   POST /api/auth/login
+// @route   POST /auth/login
 // @access  Public
-router.post("/login", async (req, res) => {
+const login = async (req, res) => {
+  // Set Cache-Control headers to prevent caching
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+  );
+
   const { username, password } = req.body;
 
   try {
@@ -62,7 +68,7 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
-});
+};
 
 // Generate JWT
 const generateToken = (id) => {
@@ -71,4 +77,8 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = router;
+// Export the functions
+module.exports = {
+  register,
+  login,
+};

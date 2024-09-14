@@ -10,28 +10,46 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../utils/auth";
 
-const Register = () => {
+const Login = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+  const API_URL =
+    process.env.REACT_APP_IS_PROD === "true"
+      ? "https://app.engineeringstrength.io"
+      : "http://localhost:5050";
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await axios.post("http://localhost:5050/auth/register", {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         username,
-        email,
         password,
       });
-      console.log("Registration successful:", response.data);
-      navigate("/dashboard");
+
+      const { token } = response.data;
+
+      if (!token) {
+        throw new Error("Token not received");
+      }
+
+      await localStorage.setItem("token", token);
+      console.log("Token stored:", token);
+
+      // Set logged-in state to trigger redirect in `useEffect`
+      const auth = await isAuthenticated();
+      if (auth) {
+        navigate("/dashboard", { replace });
+      }
     } catch (err) {
-      setError("Registration failed. Please try again.");
-      console.error(err);
+      setError("Login failed.");
+      console.error("Login error:", err);
     }
   };
 
@@ -51,9 +69,9 @@ const Register = () => {
         p={6}
         boxShadow="lg"
         bg="white"
-        onSubmit={handleRegister}
+        onSubmit={handleLogin}
       >
-        <Heading size="lg">Sign Up</Heading>
+        <Heading size="lg">Log In</Heading>
         {error && <Text color="red.500">{error}</Text>}
         <FormControl id="username">
           <FormLabel>Username</FormLabel>
@@ -61,15 +79,6 @@ const Register = () => {
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </FormControl>
-        <FormControl id="email">
-          <FormLabel>Email</FormLabel>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </FormControl>
@@ -83,11 +92,11 @@ const Register = () => {
           />
         </FormControl>
         <Button colorScheme="teal" type="submit" w="full">
-          Sign Up
+          Log In
         </Button>
       </VStack>
     </Box>
   );
 };
 
-export default Register;
+export default Login;
