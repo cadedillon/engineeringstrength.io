@@ -11,7 +11,7 @@ const Splash = () => {
       justifyContent="center"
     >
       <VStack spacing={8} textAlign="center">
-        <Heading size="2xl">Welcome to CaliBuddy</Heading>
+        <Heading size="2xl">Welcome to Engineering Strength</Heading>
         <Text fontSize="xl">
           Your personal calisthenics coach with real-time feedback.
         </Text>
