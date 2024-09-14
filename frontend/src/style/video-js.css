@@ -1,0 +1,14 @@
+.video-container {
+  position: relative;
+  object-fit: fill;
+  height: 100%;
+  width: 100%;
+}
+
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 640px;
+}
