@@ -40,7 +40,6 @@ const Login = () => {
       }
 
       await localStorage.setItem("token", token);
-      console.log("Token stored:", token);
 
       // Set logged-in state to trigger redirect in `useEffect`
       const auth = await isAuthenticated();

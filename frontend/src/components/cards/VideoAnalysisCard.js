@@ -1,25 +1,18 @@
-import VideoPlayer from "../VideoPlayer";
-import React, { useEffect, useState, useRef } from "react";
+import PoseNetPlayer from "../PoseNetPlayer";
+import React, { useState, useRef } from "react";
 
 import {
-  Box,
-  Flex,
-  VStack,
   Input,
-  Button,
-  Heading,
-  Spacer,
   Card,
   CardBody,
   IconButton,
-  SimpleGrid,
   Text,
   useToast,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { FiDatabase } from "react-icons/fi";
 
-const VideoCard = (detector) => {
+const VideoAnalysisCard = (detector) => {
   const [videoFile, setVideoFile] = useState(null); // Store the video file for browser playback
   const [videoURL, setVideoURL] = useState(""); // Store the video URL for playback
   const fileInputRef = useRef(null); // Reference to the file input element
@@ -132,7 +125,6 @@ const VideoCard = (detector) => {
     return <div>Loading...</div>; // Ensure the detector is present before rendering
   }
 
-  console.log(detector);
   return (
     <Card
       onClick={handleCardClick} // Make the whole card clickable for file input
@@ -201,7 +193,7 @@ const VideoCard = (detector) => {
       >
         {videoFile ? (
           // Directly place the video element without an extra div
-          <VideoPlayer
+          <PoseNetPlayer
             options={videoJsOptions}
             detector={detector}
             onClick={stopClickPropagation}
@@ -214,4 +206,4 @@ const VideoCard = (detector) => {
   );
 };
 
-export default VideoCard;
+export default VideoAnalysisCard;

@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
 import {
-  Box,
-  SimpleGrid,
   Heading,
+  Card,
   Spinner,
+  SimpleGrid,
   Text,
   useToast,
 } from "@chakra-ui/react";
 
-const VideoHistory = () => {
+import React, { useEffect, useState } from "react";
+import VideoHistoryCard from "./VideoHistoryCard";
+
+const HistoryGridCard = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
@@ -60,17 +62,26 @@ const VideoHistory = () => {
   }
 
   return (
-    <Box>
-      <Heading size="lg" mb={4}>
-        Your Video History
+    <Card p={5} bg="white">
+      <Heading size="md" mb={4}>
+        Video History
       </Heading>
-      <SimpleGrid columns={[1, 2, 3]} spacing={4}>
-        {videos.map((video, index) => (
-          <Box key={index} as="video" controls src={video.url} />
+      <SimpleGrid
+        columns={[2, 3, 5]} // Adjust the number of columns based on screen size
+        spacing={4}
+        overflowX="auto"
+        whiteSpace="nowrap"
+      >
+        {videos.map((video) => (
+          <VideoHistoryCard
+            key={video._id}
+            //p={2}
+            videoURL={video.url}
+          ></VideoHistoryCard>
         ))}
       </SimpleGrid>
-    </Box>
+    </Card>
   );
 };
 
-export default VideoHistory;
+export default HistoryGridCard;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 // VideoPlayer.js
 import videojs from "video.js";
@@ -10,7 +10,7 @@ import "@tensorflow/tfjs-backend-webgl";
 import { drawKeypoints, drawSkeleton } from "../utils/keypointDrawing";
 import smoothKeypoints from "../utils/keypointSmoothing";
 
-const VideoPlayer = ({ options, onPlayerReady, detector, onClick }) => {
+const PoseNetPlayer = ({ options, onPlayerReady, detector, onClick }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -42,13 +42,10 @@ const VideoPlayer = ({ options, onPlayerReady, detector, onClick }) => {
 
   // Run PoseNet on the video
   const runPoseNet = async () => {
-    console.log(detector);
     if (!playerRef.current) {
       console.log("PoseNet detector or video/canvas ref not ready");
       return;
     }
-
-    console.log("Running posenet...");
 
     const video = playerRef.current.el().getElementsByTagName("video")[0];
     const canvas = canvasRef.current;
@@ -65,11 +62,11 @@ const VideoPlayer = ({ options, onPlayerReady, detector, onClick }) => {
     const analyzeFrame = async () => {
       if (video.paused || video.ended) return;
 
-      console.log("Analyzing frame...");
-
       // Run posenet and get the keypoints
       const poses = await detector.detector.estimatePoses(video);
-      console.log(poses);
+
+      // Uncomment to check pose data during debug
+      //console.log(poses);
 
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -81,7 +78,6 @@ const VideoPlayer = ({ options, onPlayerReady, detector, onClick }) => {
         drawKeypoints(smoothedKeypoints, ctx);
         drawSkeleton(smoothedKeypoints, ctx);
       }
-      //drawKeypoints(poses[0].keypoints, ctx);
 
       // Keep running the analysis if the video is still playing
       requestAnimationFrame(analyzeFrame);
@@ -147,4 +143,4 @@ const VideoPlayer = ({ options, onPlayerReady, detector, onClick }) => {
   );
 };
 
-export default VideoPlayer;
+export default PoseNetPlayer;

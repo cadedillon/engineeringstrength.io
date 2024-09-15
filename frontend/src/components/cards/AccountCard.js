@@ -1,16 +1,6 @@
-import { useContext } from "react";
+//import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Flex,
-  VStack,
-  Button,
-  Heading,
-  Spacer,
-  Card,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
+import { Flex, Button, Heading, Card } from "@chakra-ui/react";
 
 //const userName = useContext
 

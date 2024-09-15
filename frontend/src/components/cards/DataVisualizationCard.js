@@ -1,16 +1,6 @@
-import {
-  Box,
-  Flex,
-  VStack,
-  Button,
-  Heading,
-  Spacer,
-  Card,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
+import { Heading, Card, Text } from "@chakra-ui/react";
 
-const AnalysisCard = () => {
+const DataVisualizationCard = () => {
   return (
     <Card
       width="48vw" // 40% of the viewport width
@@ -29,4 +19,4 @@ const AnalysisCard = () => {
   );
 };
 
-export default AnalysisCard;
+export default DataVisualizationCard;

@@ -4,10 +4,10 @@ import { Outlet } from "react-router-dom";
 
 // Component imports
 import AccountCard from "../components/cards/AccountCard";
-import VideoCard from "../components/cards/VideoCard";
-import AnalysisCard from "../components/cards/AnalysisCard";
+import VideoAnalysisCard from "../components/cards/VideoAnalysisCard";
+import DataVisualizationCard from "../components/cards/DataVisualizationCard";
 import TimelineCard from "../components/cards/TimelineCard";
-import HistoryCard from "../components/cards/HistoryCard";
+import HistoryGridCard from "../components/cards/HistoryGridCard";
 
 // PoseNet imports
 import * as poseDetection from "@tensorflow-models/pose-detection";
@@ -31,8 +31,6 @@ const Dashboard = () => {
       );
       setDetector(detector);
       setIsPoseNetReady(true); // Mark PoseNet as fully ready
-      console.log("Detector has been initialized");
-      console.log(detector);
     };
     loadPoseNet();
   }, []);
@@ -46,19 +44,19 @@ const Dashboard = () => {
         {/* Video Playback Card */}
         {/* Conditionally render VideoCard only if PoseNet is ready */}
         {isPoseNetReady ? (
-          <VideoCard detector={detector} />
+          <VideoAnalysisCard detector={detector} />
         ) : (
           <div>Loading PoseNet...</div> // You can display a loader or null here
         )}
         {/* Analysis Charts Card */}
-        <AnalysisCard />
+        <DataVisualizationCard />
       </SimpleGrid>
 
       {/* Progress Timeline Card */}
       <TimelineCard />
 
       {/* Scrollable Video History Card */}
-      <HistoryCard />
+      <HistoryGridCard />
 
       {/* Outlet for nested routes */}
       <Outlet />
