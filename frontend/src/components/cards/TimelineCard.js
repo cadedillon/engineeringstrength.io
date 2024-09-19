@@ -9,10 +9,13 @@ import {
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
 const TimelineCard = () => {
+  const { theme } = useContext(ThemeContext);
   return (
-    <Card p={5} mb={6} bg="white">
+    <Card p={5} mb={6} bg={theme.colors.primary}>
       <Heading size="md" mb={4}>
         Progress Over Time
       </Heading>

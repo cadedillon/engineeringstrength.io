@@ -9,10 +9,13 @@ import {
 
 import React, { useEffect, useState } from "react";
 import VideoHistoryCard from "./VideoHistoryCard";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
 const HistoryGridCard = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { theme } = useContext(ThemeContext);
   const toast = useToast();
 
   const API_URL =
@@ -62,7 +65,7 @@ const HistoryGridCard = () => {
   }
 
   return (
-    <Card p={5} bg="white">
+    <Card p={5} bg={theme.colors.primary}>
       <Heading size="md" mb={4}>
         Video History
       </Heading>

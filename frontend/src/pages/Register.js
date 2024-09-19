@@ -12,12 +12,15 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, replace } from "react-router-dom";
 import { isAuthenticated } from "../utils/auth";
+import { useContext } from "react";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const API_URL =
@@ -55,7 +58,7 @@ const Register = () => {
 
   return (
     <Box
-      bg="gray.100"
+      bg={theme.colors.background}
       minH="100vh"
       display="flex"
       alignItems="center"
@@ -68,7 +71,7 @@ const Register = () => {
         maxW="md"
         p={6}
         boxShadow="lg"
-        bg="white"
+        bg={theme.colors.primary}
         onSubmit={handleRegister}
       >
         <Heading size="lg">Sign Up</Heading>
@@ -100,7 +103,15 @@ const Register = () => {
             required
           />
         </FormControl>
-        <Button colorScheme="teal" type="submit" w="full">
+        <Button
+          background={theme.colors.secondary}
+          _hover={{
+            color: theme.colors.accent,
+          }}
+          color="white"
+          type="submit"
+          w="full"
+        >
           Sign Up
         </Button>
       </VStack>

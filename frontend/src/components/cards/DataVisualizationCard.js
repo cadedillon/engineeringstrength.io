@@ -1,8 +1,12 @@
 import { Heading, Card, Text } from "@chakra-ui/react";
+import { ThemeContext } from "../../contexts/ThemeContext";
+import { useContext } from "react";
 
 const DataVisualizationCard = () => {
+  const { theme } = useContext(ThemeContext);
   return (
     <Card
+      background={theme.colors.primary}
       width="48vw" // 40% of the viewport width
       height="80vh" // 60% of the viewport height
       borderRadius="md"

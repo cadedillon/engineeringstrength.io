@@ -11,11 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { FiDatabase } from "react-icons/fi";
+import { useContext } from "react";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
 const VideoAnalysisCard = (detector) => {
   const [videoFile, setVideoFile] = useState(null); // Store the video file for browser playback
   const [videoURL, setVideoURL] = useState(""); // Store the video URL for playback
   const fileInputRef = useRef(null); // Reference to the file input element
+  const { theme } = useContext(ThemeContext);
   const toast = useToast();
 
   const API_URL =
@@ -129,10 +132,10 @@ const VideoAnalysisCard = (detector) => {
     <Card
       onClick={handleCardClick} // Make the whole card clickable for file input
       cursor="pointer" // Change the cursor to indicate the card is clickable
-      backgroundColor="gray.200"
+      backgroundColor={theme.colors.primary}
       borderRadius="md"
       boxShadow="md"
-      _hover={{ backgroundColor: "gray.300" }} // Add hover effect
+      _hover={{ backgroundColor: theme.colors.tertiary }} // Add hover effect
       width="480px"
       height="640px"
       shadow="md"

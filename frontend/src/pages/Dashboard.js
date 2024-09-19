@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Flex, SimpleGrid } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
+import { useContext } from "react";
 
 // Component imports
 import AccountCard from "../components/cards/AccountCard";
@@ -12,10 +13,12 @@ import HistoryGridCard from "../components/cards/HistoryGridCard";
 // PoseNet imports
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as tf from "@tensorflow/tfjs-core";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const Dashboard = () => {
   const [detector, setDetector] = useState(null); // Changed to null initially
   const [isPoseNetReady, setIsPoseNetReady] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
   // Load PoseNet model on component mount
   useEffect(() => {
@@ -36,7 +39,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <Flex minH="100vh" direction="column" p={5} bg="gray.50">
+    <Flex minH="100vh" direction="column" p={5} bg={theme.colors.background}>
       <AccountCard />
 
       {/* Two Side-by-Side Cards for Video Playback and Analysis */}
