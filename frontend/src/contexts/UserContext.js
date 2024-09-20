@@ -1,10 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import React, { useState } from "react";
 
 // Create the context
-const UserProfileContext = createContext();
-
-// Custom hook to use the UserProfileContext
-export const useUserProfile = () => useContext(UserProfileContext);
+export const UserProfileContext = React.createContext();
 
 // Provider component
 export const UserProfileProvider = ({ children }) => {

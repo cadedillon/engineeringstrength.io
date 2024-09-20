@@ -13,6 +13,7 @@ import axios from "axios";
 import { replace, useNavigate } from "react-router-dom";
 import { isAuthenticated } from "../utils/auth";
 import { ThemeContext } from "../contexts/ThemeContext";
+import { UserProfileContext } from "../contexts/UserContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -20,6 +21,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
+  const { profile, updateProfile } = useContext(UserProfileContext);
 
   console.log(theme);
 
@@ -37,11 +39,21 @@ const Login = () => {
         password,
       });
 
-      const { token } = response.data;
+      console.log(response.data);
+
+      const { email, token } = response.data;
 
       if (!token) {
         throw new Error("Token not received");
       }
+
+      const userProfile = {
+        username: username,
+        email: email,
+        avatar: "",
+      };
+
+      updateProfile(userProfile);
 
       await localStorage.setItem("token", token);
 
