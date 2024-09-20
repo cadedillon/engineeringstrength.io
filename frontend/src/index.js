@@ -1,13 +1,16 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
-import { ChakraProvider } from "@chakra-ui/react";
 import App from "./App";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { UserProfileProvider } from "./contexts/UserContext";
 
 const container = document.getElementById("root");
 const root = createRoot(container); // Use createRoot instead of ReactDOM.render
 
 root.render(
-  <ChakraProvider>
-    <App />
-  </ChakraProvider>
+  <ThemeProvider>
+    <UserProfileProvider>
+      <App />
+    </UserProfileProvider>
+  </ThemeProvider>
 );

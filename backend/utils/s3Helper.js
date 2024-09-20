@@ -49,6 +49,7 @@ const fetchSignedURLsFromS3 = async (videos) => {
         const command = new GetObjectCommand({
           Bucket: process.env.S3_BUCKET_NAME,
           Key: video.key,
+          ResponseContentType: `video/mp4`,
         });
 
         const url = await getSignedUrl(s3, command, { expiresIn: 3600 }); // URL valid for 1 hour

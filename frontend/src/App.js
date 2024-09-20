@@ -12,10 +12,6 @@ import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-import VideoAnalysisTool from "./components/VideoAnalysisTool";
-import VideoHistory from "./components/VideoHistory";
-import Settings from "./components/Settings";
-
 // Style Imports
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
@@ -40,11 +36,7 @@ function App() {
                 <Navigate to="/login" replace />
               )
             }
-          >
-            <Route path="analysis" element={<VideoAnalysisTool />} />
-            <Route path="history" element={<VideoHistory />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+          ></Route>
         </Routes>
       </Router>
     </div>

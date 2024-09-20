@@ -1,52 +1,72 @@
-import { Box, Flex, VStack, Button, Heading, Spacer } from "@chakra-ui/react";
-import { Link, Outlet } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Flex, Box } from "@chakra-ui/react";
+import { Outlet } from "react-router-dom";
+import { useContext } from "react";
+
+// Component imports
+import AccountCard from "../components/cards/AccountCard";
+import VideoAnalysisCard from "../components/cards/VideoAnalysisCard";
+import DataVisualizationCard from "../components/cards/DataVisualizationCard";
+import TimelineCard from "../components/cards/TimelineCard";
+import HistoryGridCard from "../components/cards/HistoryGridCard";
+
+// PoseNet imports
+import * as poseDetection from "@tensorflow-models/pose-detection";
+import * as tf from "@tensorflow/tfjs-core";
+import { ThemeContext } from "../contexts/ThemeContext";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
+  const [detector, setDetector] = useState(null); // Changed to null initially
+  const [isPoseNetReady, setIsPoseNetReady] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
-  const handleLogout = () => {
-    // Clear any authentication tokens (if applicable)
-    localStorage.removeItem("authToken"); // Example of clearing token
+  // Load PoseNet model on component mount
+  useEffect(() => {
+    const loadPoseNet = async () => {
+      await tf.ready();
 
-    // Redirect to landing page
-    navigate("/");
-  };
+      const detectorConfig = {
+        modelType: poseDetection.movenet.modelType.SINGLEPOSE_THUNDER,
+      };
+      const detector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.MoveNet,
+        detectorConfig
+      );
+      setDetector(detector);
+      setIsPoseNetReady(true); // Mark PoseNet as fully ready
+    };
+    loadPoseNet();
+  }, []);
 
   return (
-    <Flex minH="100vh">
-      {/* Sidebar */}
-      <Box bg="gray.200" p={5} w="250px" display="flex" flexDirection="column">
-        <VStack spacing={4} align="start" flex="1">
-          <Heading size="md">Dashboard</Heading>
-          <Link to="/dashboard/analysis">
-            <Button w="full" colorScheme="teal">
-              Video Analysis Tool
-            </Button>
-          </Link>
-          <Link to="/dashboard/history">
-            <Button w="full" colorScheme="teal">
-              Video History
-            </Button>
-          </Link>
-          <Link to="/dashboard/settings">
-            <Button w="full" colorScheme="teal">
-              Settings
-            </Button>
-          </Link>
-          {/* Spacer pushes the log out button to the bottom */}
-          <Spacer />
-          {/* Log Out Button */}
-          <Button w="full" colorScheme="red" onClick={handleLogout}>
-            Log Out
-          </Button>
-        </VStack>
-      </Box>
+    <Flex minH="100vh" direction="column" p={5} bg={theme.colors.background}>
+      <AccountCard />
 
-      {/* Main Content Area */}
-      <Box flex="1" p={5} bg="gray.50">
-        <Outlet />
-      </Box>
+      {/* Two Side-by-Side Cards for Video Playback and Analysis */}
+      <Flex justify="space-between" mb={6} width="100%">
+        {/* Video Playback Card - 30% width */}
+        {isPoseNetReady ? (
+          <Box width="30%">
+            <VideoAnalysisCard detector={detector} />
+          </Box>
+        ) : (
+          <Box width="30%">Loading PoseNet...</Box> // Loader or placeholder
+        )}
+
+        {/* Analysis Charts Card - 65% width */}
+        <Box width="70%">
+          <DataVisualizationCard />
+        </Box>
+      </Flex>
+
+      {/* Progress Timeline Card */}
+      <TimelineCard />
+
+      {/* Scrollable Video History Card */}
+      <HistoryGridCard />
+
+      {/* Outlet for nested routes */}
+      <Outlet />
     </Flex>
   );
 };

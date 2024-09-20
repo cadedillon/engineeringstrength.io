@@ -60,6 +60,7 @@ const login = async (req, res) => {
       res.status(200).json({
         _id: user._id,
         username: user.username,
+        email: user.email,
         token: generateToken(user._id),
       });
     } else {
