@@ -24,7 +24,7 @@ const AccountCard = () => {
     <Card p={5} mb={6} bg={theme.colors.primary}>
       <Flex justify="space-between" align="center">
         <Heading size="lg" color={theme.colors.text}>
-          Welcome, {profile.username}
+          Welcome, <i>{profile.username}</i>
         </Heading>
         <Button
           onClick={handleLogout}
