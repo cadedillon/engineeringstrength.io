@@ -27,7 +27,7 @@ const HistoryPlayer = ({ options, onReady }) => {
     } else if (playerRef.current) {
       // If player already exists, update the source on options change
       const player = playerRef.current;
-      player.src(options.sources);
+      player.src(options.sources[0]);
       player.autoplay(options.autoplay);
       console.log(player.currentSource());
     }
@@ -40,7 +40,7 @@ const HistoryPlayer = ({ options, onReady }) => {
     };
   }, [options]);
 
-  console.log(options);
+  console.log(options.sources[0]);
 
   return (
     <div

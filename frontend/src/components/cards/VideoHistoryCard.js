@@ -3,7 +3,7 @@ import { useRef } from "react";
 
 import { Card, CardBody } from "@chakra-ui/react";
 
-const VideoHistoryCard = (videoURL) => {
+const VideoHistoryCard = ({ videoURL }) => {
   const playerRef = useRef(null);
 
   console.log(videoURL);
@@ -19,8 +19,12 @@ const VideoHistoryCard = (videoURL) => {
     controlBar: {
       fullscreenToggle: false, // Disable Fullscreen mode
     },
-    src: videoURL,
-    type: "video/mp4",
+    sources: [
+      {
+        src: videoURL,
+        type: "video/mp4",
+      },
+    ],
   };
 
   return (
@@ -39,7 +43,14 @@ const VideoHistoryCard = (videoURL) => {
         height="100%"
         p="0"
       >
-        <HistoryPlayer options={videoJsOptions} />
+        {/* <HistoryPlayer options={videoJsOptions} /> */}
+        <video
+          width="480"
+          height="640"
+          controls
+          src={videoURL} // Check if the video URL works in a native HTML5 video tag
+          style={{ objectFit: "contain" }}
+        />
       </CardBody>
     </Card>
   );
