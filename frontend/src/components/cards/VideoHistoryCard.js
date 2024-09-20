@@ -44,13 +44,32 @@ const VideoHistoryCard = ({ videoURL }) => {
         p="0"
       >
         {/* <HistoryPlayer options={videoJsOptions} /> */}
-        <video
-          width="480"
-          height="640"
-          controls
-          src={videoURL} // Check if the video URL works in a native HTML5 video tag
-          style={{ objectFit: "contain" }}
-        />
+        <div
+          className="video-container"
+          style={{
+            width: "480px", // Ensure the video container takes the full width
+            height: "640px", // Ensure the video container takes the full height
+            display: "flex", // Flexbox to center video if needed
+            justifyContent: "center",
+            alignItems: "center",
+            objectFit: "contain",
+            overflow: "hidden", // Prevent any overflow
+          }}
+        >
+          <video
+            width="480px"
+            height="640px"
+            controls
+            src={videoURL} // Check if the video URL works in a native HTML5 video tag
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "fill",
+              maxWidth: "100%", // Prevent the video from expanding beyond the container
+              maxHeight: "100%", // Prevent the video from expanding beyond the container
+            }} // Stretch video to fill container
+          />
+        </div>
       </CardBody>
     </Card>
   );

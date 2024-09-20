@@ -70,7 +70,7 @@ const HistoryGridCard = () => {
         Video History
       </Heading>
       <SimpleGrid
-        columns={[2, 3, 5]} // Adjust the number of columns based on screen size
+        columns={[1, 2, 3]} // Adjust the number of columns based on screen size
         spacing={4}
         overflowX="auto"
         whiteSpace="nowrap"

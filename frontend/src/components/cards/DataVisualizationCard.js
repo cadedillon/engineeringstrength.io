@@ -7,8 +7,8 @@ const DataVisualizationCard = () => {
   return (
     <Card
       background={theme.colors.primary}
-      width="48vw" // 40% of the viewport width
-      height="80vh" // 60% of the viewport height
+      width="100%" // 40% of the viewport width
+      height="640px" // 60% of the viewport height
       borderRadius="md"
       shadow="md"
       p={4}

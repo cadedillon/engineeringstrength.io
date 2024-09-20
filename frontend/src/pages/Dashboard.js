@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Flex, SimpleGrid } from "@chakra-ui/react";
+import { Flex, Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import { useContext } from "react";
 
@@ -43,17 +43,21 @@ const Dashboard = () => {
       <AccountCard />
 
       {/* Two Side-by-Side Cards for Video Playback and Analysis */}
-      <SimpleGrid columns={[1, 2]} spacing={10} mb={6}>
-        {/* Video Playback Card */}
-        {/* Conditionally render VideoCard only if PoseNet is ready */}
+      <Flex justify="space-between" mb={6} width="100%">
+        {/* Video Playback Card - 30% width */}
         {isPoseNetReady ? (
-          <VideoAnalysisCard detector={detector} />
+          <Box width="30%">
+            <VideoAnalysisCard detector={detector} />
+          </Box>
         ) : (
-          <div>Loading PoseNet...</div> // You can display a loader or null here
+          <Box width="30%">Loading PoseNet...</Box> // Loader or placeholder
         )}
-        {/* Analysis Charts Card */}
-        <DataVisualizationCard />
-      </SimpleGrid>
+
+        {/* Analysis Charts Card - 65% width */}
+        <Box width="70%">
+          <DataVisualizationCard />
+        </Box>
+      </Flex>
 
       {/* Progress Timeline Card */}
       <TimelineCard />
