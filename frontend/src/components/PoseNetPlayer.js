@@ -12,6 +12,8 @@ import smoothKeypoints from "../utils/keypointPreprocessing";
 import visualizeJointAngles from "../utils/jointAngleVisualizer";
 import getSideFacingCamera from "../utils/determineSideProfile";
 
+let visibleSide = "left";
+
 const PoseNetPlayer = ({ options, onPlayerReady, detector, onClick }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -68,19 +70,19 @@ const PoseNetPlayer = ({ options, onPlayerReady, detector, onClick }) => {
       const poses = await detector.detector.estimatePoses(video);
 
       // Uncomment to check pose data during debug
-      console.log(poses);
+      // console.log(poses);
 
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Determine which side is facing the camera
-      const visibleSide = getSideFacingCamera(poses[0].keypoints);
+      visibleSide = getSideFacingCamera(poses[0].keypoints, visibleSide);
 
       // Draw keypoints and skeleton on the canvas
       const smoothedKeypoints = smoothKeypoints(poses[0].keypoints);
 
       drawKeypoints(smoothedKeypoints, ctx, visibleSide);
-      drawSkeleton(smoothedKeypoints, ctx, visibleSide);
+      //drawSkeleton(smoothedKeypoints, ctx, visibleSide);
       visualizeJointAngles(smoothedKeypoints, ctx, visibleSide);
 
       // Keep running the analysis if the video is still playing

@@ -81,7 +81,7 @@ const drawSkeleton = (keypoints, ctx, visibleSide) => {
       ctx.beginPath();
       ctx.moveTo(from.x, from.y);
       ctx.lineTo(to.x, to.y);
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 5;
       ctx.strokeStyle = "lime";
       ctx.stroke();
     } else if (lastGoodKeypoints[from.name] && lastGoodKeypoints[to.name]) {
@@ -92,7 +92,7 @@ const drawSkeleton = (keypoints, ctx, visibleSide) => {
       ctx.beginPath();
       ctx.moveTo(fromX, fromY);
       ctx.lineTo(toX, toY);
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 5;
       ctx.strokeStyle = "orange"; // Different color for interpolated lines
       ctx.stroke();
     }

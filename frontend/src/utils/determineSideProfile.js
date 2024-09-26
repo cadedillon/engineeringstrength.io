@@ -1,4 +1,6 @@
-const getSideFacingCamera = (keypoints) => {
+const SIDE_SWITCH_THRESHOLD = 0.2; // Adjust this value as needed
+
+const getSideFacingCamera = (keypoints, currentSide) => {
   const leftSide = [
     "left_shoulder",
     "left_elbow",
@@ -28,7 +30,10 @@ const getSideFacingCamera = (keypoints) => {
       return sum + (keypoint ? keypoint.score : 0);
     }, 0) / rightSide.length;
 
-  return leftConfidence > rightConfidence ? "left" : "right";
+  if (Math.abs(leftConfidence - rightConfidence) > SIDE_SWITCH_THRESHOLD) {
+    console.log("Updating visible side");
+    return leftConfidence > rightConfidence ? "left" : "right";
+  } else return currentSide;
 };
 
 export default getSideFacingCamera;

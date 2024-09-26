@@ -12,6 +12,9 @@ const visualizeJointAngles = (keypoints, ctx, visibleSide) => {
     const leftElbow = keypoints.find((kp) => kp.name === "left_elbow");
     const leftWrist = keypoints.find((kp) => kp.name === "left_wrist");
 
+    console.log(leftShoulder);
+    console.log(leftKnee);
+
     if (
       leftAnkle &&
       leftHip &&
@@ -38,8 +41,9 @@ const visualizeJointAngles = (keypoints, ctx, visibleSide) => {
       // Draw and visualize right shoulder angle
       drawJointAngle(ctx, leftElbow, leftShoulder, leftHip, leftShoulderAngle);
 
-      // Draw and visualize right hip angle
-      drawJointAngle(ctx, leftShoulder, leftHip, leftKnee, leftHipAngle);
+      leftShoulder.x > leftKnee.x // Draw and visualize right hip angle
+        ? drawJointAngle(ctx, leftShoulder, leftHip, leftKnee, leftHipAngle)
+        : drawJointAngle(ctx, leftKnee, leftHip, leftShoulder, leftHipAngle);
 
       // Draw and visualize right knee angle
       drawJointAngle(ctx, leftHip, leftKnee, leftAnkle, leftKneeAngle);
@@ -53,6 +57,9 @@ const visualizeJointAngles = (keypoints, ctx, visibleSide) => {
     const rightShoulder = keypoints.find((kp) => kp.name === "right_shoulder");
     const rightElbow = keypoints.find((kp) => kp.name === "right_elbow");
     const rightWrist = keypoints.find((kp) => kp.name === "right_wrist");
+
+    console.log(rightShoulder);
+    console.log(rightKnee);
 
     // Ensure the keypoints exist and have a valid score
     if (
@@ -97,11 +104,18 @@ const visualizeJointAngles = (keypoints, ctx, visibleSide) => {
         rightShoulderAngle
       );
 
-      // Draw and visualize right hip angle
-      drawJointAngle(ctx, rightShoulder, rightHip, rightKnee, rightHipAngle);
+      rightShoulder.x > rightKnee.x // Draw and visualize right hip angle
+        ? drawJointAngle(ctx, rightShoulder, rightHip, rightKnee, rightHipAngle)
+        : drawJointAngle(
+            ctx,
+            rightKnee,
+            rightHip,
+            rightShoulder,
+            rightHipAngle
+          );
 
       // Draw and visualize right knee angle
-      drawJointAngle(ctx, rightHip, rightKnee, rightAnkle, rightKneeAngle);
+      drawJointAngle(ctx, rightAnkle, rightKnee, rightHip, rightKneeAngle);
     }
   }
 };
