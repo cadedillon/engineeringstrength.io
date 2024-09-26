@@ -5,8 +5,31 @@ let lastGoodKeypoints = {};
 const MIN_CONFIDENCE_THRESHOLD = 0.3;
 
 // Draw keypoints on the canvas
-const drawKeypoints = (keypoints, ctx) => {
-  keypoints.forEach((keypoint) => {
+const drawKeypoints = (keypoints, ctx, visibleSide) => {
+  const sideJoints =
+    visibleSide === "left"
+      ? [
+          "left_shoulder",
+          "left_elbow",
+          "left_wrist",
+          "left_hip",
+          "left_knee",
+          "left_ankle",
+        ]
+      : [
+          "right_shoulder",
+          "right_elbow",
+          "right_wrist",
+          "right_hip",
+          "right_knee",
+          "right_ankle",
+        ];
+
+  const visibleKeypoints = keypoints.filter((kp) =>
+    sideJoints.includes(kp.name)
+  );
+
+  visibleKeypoints.forEach((keypoint) => {
     const { x, y, score } = keypoint; // Destructure x, y, and score from keypoint
     if (score > MIN_CONFIDENCE_THRESHOLD) {
       // Only draw keypoints with a confidence score above 0.5
@@ -29,20 +52,23 @@ const drawKeypoints = (keypoints, ctx) => {
 };
 
 // Draw skeleton on the canvas
-const drawSkeleton = (keypoints, ctx) => {
-  const adjacentKeyPoints = [
-    [5, 6], // Shoulders
-    [5, 7], // Left shoulder to left elbow
-    [7, 9], // Left elbow to left wrist
-    [6, 8], // Right shoulder to right elbow
-    [8, 10], // Right elbow to right wrist
-    [5, 11], // Left shoulder to left hip
-    [6, 12], // Right shoulder to right hip
-    [11, 13], // Left hip to left knee
-    [13, 15], // Left knee to left ankle
-    [12, 14], // Right hip to right knee
-    [14, 16], // Right knee to right ankle
-  ];
+const drawSkeleton = (keypoints, ctx, visibleSide) => {
+  const adjacentKeyPoints =
+    visibleSide === "left"
+      ? [
+          [0, 2], // Left shoulder to left elbow
+          [2, 4], // Left elbow to left wrist
+          [0, 6], // Left shoulder to left hip
+          [6, 8], // Left hip to left knee
+          [8, 10], // Left knee to left ankle
+        ]
+      : [
+          [1, 3], // Right shoulder to right elbow
+          [3, 5], // Right elbow to right wrist
+          [1, 7], // Right shoulder to right hip
+          [7, 9], // Right hip to right knee
+          [9, 11], // Right knee to right ankle
+        ];
 
   adjacentKeyPoints.forEach(([fromIdx, toIdx]) => {
     const from = keypoints[fromIdx];

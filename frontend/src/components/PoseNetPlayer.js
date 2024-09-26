@@ -8,7 +8,9 @@ import "@tensorflow/tfjs-backend-webgl";
 
 // Utility imports
 import { drawKeypoints, drawSkeleton } from "../utils/keypointDrawing";
-import smoothKeypoints from "../utils/keypointSmoothing";
+import smoothKeypoints from "../utils/keypointPreprocessing";
+import visualizeJointAngles from "../utils/jointAngleVisualizer";
+import getSideFacingCamera from "../utils/determineSideProfile";
 
 const PoseNetPlayer = ({ options, onPlayerReady, detector, onClick }) => {
   const videoRef = useRef(null);
@@ -66,18 +68,20 @@ const PoseNetPlayer = ({ options, onPlayerReady, detector, onClick }) => {
       const poses = await detector.detector.estimatePoses(video);
 
       // Uncomment to check pose data during debug
-      //console.log(poses);
+      console.log(poses);
 
       // Clear the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw keypoints and skeleton on the canvas
-      for (const pose of poses) {
-        const smoothedKeypoints = smoothKeypoints(pose.keypoints);
+      // Determine which side is facing the camera
+      const visibleSide = getSideFacingCamera(poses[0].keypoints);
 
-        drawKeypoints(smoothedKeypoints, ctx);
-        drawSkeleton(smoothedKeypoints, ctx);
-      }
+      // Draw keypoints and skeleton on the canvas
+      const smoothedKeypoints = smoothKeypoints(poses[0].keypoints);
+
+      drawKeypoints(smoothedKeypoints, ctx, visibleSide);
+      drawSkeleton(smoothedKeypoints, ctx, visibleSide);
+      visualizeJointAngles(smoothedKeypoints, ctx, visibleSide);
 
       // Keep running the analysis if the video is still playing
       requestAnimationFrame(analyzeFrame);
