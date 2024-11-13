@@ -27,10 +27,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "", // Default can be a placeholder image URL or left empty
   },
-  //videos: [{
-  //  type: mongoose.Schema.Types.ObjectId,
-  //  ref: 'Video'  // Assuming you have a Video model
-  //}],
   createdAt: {
     type: Date,
     default: Date.now,
